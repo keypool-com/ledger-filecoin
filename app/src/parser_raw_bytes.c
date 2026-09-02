@@ -1,0 +1,154 @@
+/*******************************************************************************
+ *  (c) 2018 - 2023 Zondax AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ********************************************************************************/
+
+#include "parser_raw_bytes.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <zxmacros.h>
+
+#include "app_mode.h"
+#include "cbor.h"
+#include "crypto.h"
+#include "fil_utils.h"
+#include "parser_common.h"
+#include "parser_impl.h"
+#include "parser_txdef.h"
+#include "tx.h"
+#include "zxformat.h"
+
+static const char messagePrefix[] = "Filecoin Sign Bytes:\n";
+
+// at init we need to initializae our hasher ctx,
+// then, get the data lenght by parsing the varint that comes at
+// the begining of the message.
+// and, finally, check that the data comes prefixed
+parser_error_t raw_bytes_init(uint8_t *buf, size_t buf_len) {
+    // Drop any previous session up front: if this init fails half way, the state
+    // left behind must not be resumable by a later raw_bytes_update.
+    parser_tx_obj.raw_bytes_tx.initialized = false;
+
+    if (buf_len == 0) return parser_unexpected_buffer_end;
+
+#if defined(LEDGER_SPECIFIC)
+    // Setup hasher pointer. This will reduce stack usage
+    if (blake_hash_setup(&parser_tx_obj.raw_bytes_tx.ctx_blake2b) != zxerr_ok) {
+        return parser_unexpected_error;
+    }
+#endif
+    // init hash context
+    blake_hash_init();
+
+    // get message len in bytes
+    uint64_t total = 0;
+    size_t bytes_read = decompressLEB128(buf, buf_len, &total);
+
+    if (total == 0 || bytes_read == buf_len || total > FLASH_BUFFER_SIZE) {
+        return parser_unexpected_buffer_end;
+    }
+
+    // skip the bytes used by varint
+    size_t rx = buf_len - bytes_read;
+
+    if (rx <= sizeof(messagePrefix)) return parser_unexpected_buffer_end;
+
+    // get pointer to the message: prefix + raw_bytes
+    uint8_t *msg = buf + bytes_read;
+
+    uint8_t prefix_len = strlen(messagePrefix);
+
+    // check for prefix
+    if (MEMCMP(messagePrefix, (const char *)msg, prefix_len)) return parser_invalid_prefix;
+
+    // Initialize the other fields of the raw_bytes state.
+    parser_tx_obj.raw_bytes_tx.total = total;
+    parser_tx_obj.raw_bytes_tx.current = 0;
+    MEMZERO(parser_tx_obj.raw_bytes_tx.digest, BLAKE2B_256_SIZE);
+
+    // The prefix checked above is the only thing separating a raw-bytes digest
+    // from a transaction digest - both end up as CID(blake2b(..)) fed to the same
+    // signer. Mark the session live only now that the prefix has been accepted.
+    parser_tx_obj.raw_bytes_tx.initialized = true;
+
+    return raw_bytes_update(msg, rx);
+}
+
+void raw_bytes_reset(void) { MEMZERO(&parser_tx_obj.raw_bytes_tx, sizeof(parser_tx_obj.raw_bytes_tx)); }
+
+bool raw_bytes_is_initialized(void) { return parser_tx_obj.raw_bytes_tx.initialized; }
+
+parser_error_t raw_bytes_update(uint8_t *buf, size_t buf_len) {
+    if (!parser_tx_obj.raw_bytes_tx.initialized) return parser_init_context_empty;
+
+    if (buf_len == 0) return parser_unexpected_buffer_end;
+
+    if (blake_hash_update(buf, buf_len) != zxerr_ok) return parser_value_out_of_range;
+
+    parser_tx_obj.raw_bytes_tx.current += buf_len;
+
+    return parser_ok;
+}
+
+parser_error_t _readRawBytes(__Z_UNUSED const parser_context_t *ctx, raw_bytes_state_t *tx) {
+    if (!tx->initialized) return parser_no_data;
+
+    size_t total = tx->total;
+    size_t current = tx->current;
+
+    uint8_t tmp[BLAKE2B_256_SIZE] = {0};
+
+    if (total != current) return parser_no_data;
+
+    if (blake_hash_finish(tmp, sizeof(tmp)) != zxerr_ok) return parser_value_out_of_range;
+
+    if (blake_hash_cid(tmp, BLAKE2B_256_SIZE, tx->digest, BLAKE2B_256_SIZE) != zxerr_ok) {
+        return parser_unexpected_error;
+    }
+
+    return parser_ok;
+}
+
+parser_error_t _validateRawBytes(__Z_UNUSED const parser_context_t *ctx) { return parser_ok; }
+
+uint8_t _getNumItemsRawBytes(__Z_UNUSED const parser_context_t *ctx) {
+    // Raw-bytes data hash as an hex string
+    return 1;
+}
+
+parser_error_t _getItemRawBytes(__Z_UNUSED const parser_context_t *ctx, uint8_t displayIdx, char *outKey,
+                                uint16_t outKeyLen, char *outVal, uint16_t outValLen, uint8_t pageIdx,
+                                uint8_t *pageCount) {
+    if (displayIdx > 1) {
+        return parser_display_idx_out_of_range;
+    }
+
+    // Check that Blindsign is enabled
+    if (!app_mode_blindsign()) {
+        return parser_blindsign_mode_required;
+    }
+
+    // get the hash of the buffer
+    uint8_t hex[BLAKE2B_256_SIZE * 2 + 1] = {0};
+
+    // get hash
+    array_to_hexstr((char *)hex, 65, parser_tx_obj.raw_bytes_tx.digest, BLAKE2B_256_SIZE);
+
+    snprintf(outKey, outKeyLen, "BytesHash:");
+
+    pageString(outVal, outValLen, (const char *)hex, pageIdx, pageCount);
+
+    return parser_ok;
+}

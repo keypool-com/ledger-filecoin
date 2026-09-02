@@ -1,4 +1,4 @@
-// Modified by Zondax GmbH
+// Modified by Zondax AG
 //
 // Base32 implementation
 //
@@ -21,81 +21,42 @@
 
 #include <string.h>
 
-int base32_decode(const uint8_t *encoded, unsigned int encodedSize,  uint8_t *result, unsigned int bufSize) {
-    if (encoded == NULL) {
+uint32_t base32_encode(const uint8_t *data, uint32_t length, char *result, uint32_t resultLen) {
+    static const char *alphabet = "abcdefghijklmnopqrstuvwxyz234567";
+
+    if (data == NULL || result == NULL || length == 0 || resultLen == 0 || length > (1u << 28)) {
         return 0;
     }
 
-    unsigned int buffer = 0;
-    int bitsLeft = 0;
-    unsigned int count = 0;
-    for (const uint8_t *ptr = encoded; count < bufSize && *ptr && (ptr - encoded) < encodedSize; ++ptr) {
-        uint8_t ch = *ptr;
-        if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-') {
-            continue;
-        }
-        buffer <<= 5;
+    uint64_t buffer = 0;
+    uint32_t bitsLeft = 0;
+    uint32_t count = 0;
 
-        // Deal with commonly mistyped characters
-        if (ch == '0') {
-            ch = 'O';
-        } else if (ch == '1') {
-            ch = 'L';
-        } else if (ch == '8') {
-            ch = 'B';
-        }
+    for (uint32_t i = 0; i < length; i++) {
+        buffer = (buffer << 8) | data[i];
+        bitsLeft += 8;
 
-        // Look up one base32 digit
-        if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
-            ch = (ch & 0x1F) - 1;
-        } else if (ch >= '2' && ch <= '7') {
-            ch -= '2' - 26;
-        } else {
-            return -1;
-        }
-
-        buffer |= ch;
-        bitsLeft += 5;
-        if (bitsLeft >= 8) {
-            result[count++] = buffer >> (bitsLeft - 8);
-            bitsLeft -= 8;
-        }
-    }
-    if (count < bufSize) {
-        result[count] = '\000';
-    }
-
-    return count;
-}
-
-int base32_encode(const uint8_t *data, unsigned int length, uint8_t *result, unsigned int bufSize) {
-    if (length < 0 || length > (1 << 28)) {
-        return -1;
-    }
-    unsigned int count = 0;
-    if (length > 0) {
-        unsigned int buffer = data[0];
-        unsigned int next = 1;
-        int bitsLeft = 8;
-        while (count < bufSize && (bitsLeft > 0 || next < length)) {
-            if (bitsLeft < 5) {
-                if (next < length) {
-                    buffer <<= 8;
-                    buffer |= data[next++] & 0xFF;
-                    bitsLeft += 8;
-                } else {
-                    int pad = 5 - bitsLeft;
-                    buffer <<= pad;
-                    bitsLeft += pad;
-                }
+        while (bitsLeft >= 5) {
+            if (count >= resultLen) {
+                return count;
             }
-            int index = 0x1F & (buffer >> (bitsLeft - 5));
             bitsLeft -= 5;
-            result[count++] = "abcdefghijklmnopqrstuvwxyz234567"[index];
+            uint32_t index = (uint32_t)((buffer >> bitsLeft) & 0x1F);
+            result[count++] = alphabet[index];
         }
+        // keep only the remaining bits in buffer to avoid overflow
+        buffer &= ((1ULL << bitsLeft) - 1);
     }
-    if (count < bufSize) {
-        result[count] = '\000';
+
+    // Handle the remaining bits (if any)
+    if (bitsLeft > 0 && count < resultLen) {
+        buffer <<= (5 - bitsLeft);
+        uint32_t index = (uint32_t)(buffer & 0x1F);
+        result[count++] = alphabet[index];
+    }
+
+    if (count < resultLen) {
+        result[count] = '\0';
     }
     return count;
 }

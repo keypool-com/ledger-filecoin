@@ -1,5 +1,5 @@
 #*******************************************************************************
-#*   (c) 2019 Zondax GmbH
+#*   (c) 2018 -2024 Zondax AG
 #*
 #*  Licensed under the Apache License, Version 2.0 (the "License");
 #*  you may not use this file except in compliance with the License.
@@ -18,10 +18,17 @@
 # BOLOS_SDK IS  DEFINED	 	We use the plain Makefile for Ledger
 # BOLOS_SDK NOT DEFINED		We use a containerized build approach
 
-TESTS_ZEMU_JS_PACKAGE = "@zondax/ledger-filecoin"
-TESTS_ZEMU_JS_DIR =
+# TESTS_JS_PACKAGE = "@zondax/ledger-filecoin"
+# TESTS_JS_DIR = $(CURDIR)/../ledger-filecoin-js
 
 ifeq ($(BOLOS_SDK),)
+PRODUCTION_BUILD ?= 1
+SKIP_NANOS = 1
+
+ifeq ($(SKIP_NANOS), 0)
+$(error "NanoS device is not supported")
+endif
+
 include $(CURDIR)/deps/ledger-zxlib/dockerized_build.mk
 else
 default:
@@ -30,3 +37,9 @@ default:
 	$(info "Calling app Makefile for target $@")
 	COIN=$(COIN) $(MAKE) -C app $@
 endif
+
+test_all:
+	make clean
+	PRODUCTION_BUILD=1 make
+	make zemu_install
+	make zemu_test

@@ -1,9 +1,10 @@
 [
     {
-        "description": "TODO invalid test case ",
+        "description": "TODO invalid test case 1",
         "encoded_tx": "igBAQABCAAAAQgAAQgAAAEA=",
         "valid": false,
         "testnet": false,
+        "error": "Invalid address format",
         "message": {
             "version": 0,
             "to": "",
@@ -19,8 +20,9 @@
     },
     {
         "description": "Basic test case",
-        "encoded_tx": "igBVAf0dD0381+ma/Lmagya33EWdMsYoVQG4gmGdRlWPPZ4xbRG0jc8hEycCWgFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAf0dD0381+ma/Lmagya33EWdMsYoVQG4gmGdRlWPPZ4xbRG0jc8hEycCWgFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -29,16 +31,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327025a0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327025a0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Basic test case Testnet",
-        "encoded_tx": "igBVAf0dD0381+ma/Lmagya33EWdMsYoVQG4gmGdRlWPPZ4xbRG0jc8hEycCWgFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAf0dD0381+ma/Lmagya33EWdMsYoVQG4gmGdRlWPPZ4xbRG0jc8hEycCWgFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": true,
         "message": {
             "version": 0,
@@ -47,16 +50,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327025a0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327025a0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 0 addresses",
-        "encoded_tx": "igBCAABDAJYBAUQAAYagGWGoQwAJxEIAAABA",
+        "encoded_tx": "igBCAABDAJYBAUQAAYagGWGoQgAAQwAJxABA",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -65,16 +69,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00420000430096010144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00420000430096010144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 0 addresses 2",
-        "encoded_tx": "igBDAIAIQwDBDQFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBDAIAIQwDBDQFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -83,16 +88,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00430080084300c10d0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00430080084300c10d0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 0 addresses 3",
-        "encoded_tx": "igBLAP///////////wFCAAABRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBLAP///////////wFCAAABRAABhqAZYahCAABDAAnEAEA=",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -101,16 +107,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a004b00ffffffffffffffffff014200000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a004b00ffffffffffffffffff014200000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 1 addresses",
-        "encoded_tx": "igBVAf0dD0381+ma/Lmagya33EWdMsYoVQG4gmGdRlWPPZ4xbRG0jc8hEycCagFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAf0dD0381+ma/Lmagya33EWdMsYoVQG4gmGdRlWPPZ4xbRG0jc8hEycCagFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -119,16 +126,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327026a0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327026a0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 1 addresses 2",
-        "encoded_tx": "igBVAbzsB8BeafkkaOKz4793yHTyxdqMVQGwbnpvD1Ud4mH+Om/hgrQi7gvGtgFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAbzsB8BeafkkaOKz4793yHTyxdqMVQGwbnpvD1Ud4mH+Om/hgrQi7gvGtgFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -137,16 +145,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501bcec07c05e69f92468e2b3e3bf77c874f2c5da8c5501b06e7a6f0f551de261fe3a6fe182b422ee0bc6b60144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501bcec07c05e69f92468e2b3e3bf77c874f2c5da8c5501b06e7a6f0f551de261fe3a6fe182b422ee0bc6b60144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 1 addresses 3",
-        "encoded_tx": "igBVAdFQBQTk0aw+iayJGkUCWG+r2bQXVQH9HQ9N/Nfpmvy5moMmt9xFnTLGKAFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAdFQBQTk0aw+iayJGkUCWG+r2bQXVQH9HQ9N/Nfpmvy5moMmt9xFnTLGKAFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -155,16 +164,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501d1500504e4d1ac3e89ac891a4502586fabd9b4175501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6280144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501d1500504e4d1ac3e89ac891a4502586fabd9b4175501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6280144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 2 addresses",
-        "encoded_tx": "igBVAuVN6k+bxbR9JhgZgm1eH7+LxVA7VQLrWL0IoVpq3hnQmJZ0FI+pWoFXxgFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAuVN6k+bxbR9JhgZgm1eH7+LxVA7VQLrWL0IoVpq3hnQmJZ0FI+pWoFXxgFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -173,16 +183,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005502e54dea4f9bc5b47d261819826d5e1fbf8bc5503b5502eb58bd08a15a6ade19d0989674148fa95a8157c60144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005502e54dea4f9bc5b47d261819826d5e1fbf8bc5503b5502eb58bd08a15a6ade19d0989674148fa95a8157c60144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 2 addresses 2",
-        "encoded_tx": "igBVAm0hE360xIFCaeiU0pbPZQDkPNcUVQLgx8dfgtVeXtVdsoAzYw30J0qYTwFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAm0hE360xIFCaeiU0pbPZQDkPNcUVQLgx8dfgtVeXtVdsoAzYw30J0qYTwFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -191,16 +202,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a0055026d21137eb4c4814269e894d296cf6500e43cd7145502e0c7c75f82d55e5ed55db28033630df4274a984f0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a0055026d21137eb4c4814269e894d296cf6500e43cd7145502e0c7c75f82d55e5ed55db28033630df4274a984f0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 2 addresses 3",
-        "encoded_tx": "igBVAjFrTB/11K+3gmzqtbsPLD4PNkBTVQLlTepPm8W0fSYYGYJtXh+/i8VQOwFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAjFrTB/11K+3gmzqtbsPLD4PNkBTVQLlTepPm8W0fSYYGYJtXh+/i8VQOwFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -209,16 +221,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005502316b4c1ff5d4afb7826ceab5bb0f2c3e0f3640535502e54dea4f9bc5b47d261819826d5e1fbf8bc5503b0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005502316b4c1ff5d4afb7826ceab5bb0f2c3e0f3640535502e54dea4f9bc5b47d261819826d5e1fbf8bc5503b0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 3 addresses",
-        "encoded_tx": "igBYMQOtWN9pbi1OkeqGyIHpOLpOqBs5XhJ5e4S5zzFLlUZwXoOcepnWBrJH3bT5rHo0FN1YMQOzKU8KLingxm68I10v7cpWl794SvYFx1r2COamPVzTjqhcqJieDv3pGIs4L5NyRg0BRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBYMQOtWN9pbi1OkeqGyIHpOLpOqBs5XhJ5e4S5zzFLlUZwXoOcepnWBrJH3bT5rHo0FN1YMQOzKU8KLingxm68I10v7cpWl794SvYFx1r2COamPVzTjqhcqJieDv3pGIs4L5NyRg0BRAABhqAZYahCAABDAAnEAEA=",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -227,16 +240,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00583103ad58df696e2d4e91ea86c881e938ba4ea81b395e12797b84b9cf314b9546705e839c7a99d606b247ddb4f9ac7a3414dd583103b3294f0a2e29e0c66ebc235d2fedca5697bf784af605c75af608e6a63d5cd38ea85ca8989e0efde9188b382f9372460d0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00583103ad58df696e2d4e91ea86c881e938ba4ea81b395e12797b84b9cf314b9546705e839c7a99d606b247ddb4f9ac7a3414dd583103b3294f0a2e29e0c66ebc235d2fedca5697bf784af605c75af608e6a63d5cd38ea85ca8989e0efde9188b382f9372460d0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 3 addresses 2",
-        "encoded_tx": "igBYMQOWoaPk6noU1JmF5mGyJAHUT+1ALR0JJbJDySNYnA+8fjLNBOKe140V0306qj/m2jNYMQOGtFQljFiUdffRb1qsAYp59sEWnSD8M5Id2LXOHKxsNI+Qo2A2JPauuRtkUYwugJUBRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBYMQOWoaPk6noU1JmF5mGyJAHUT+1ALR0JJbJDySNYnA+8fjLNBOKe140V0306qj/m2jNYMQOGtFQljFiUdffRb1qsAYp59sEWnSD8M5Id2LXOHKxsNI+Qo2A2JPauuRtkUYwugJUBRAABhqAZYahCAABDAAnEAEA=",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -245,16 +259,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a0058310396a1a3e4ea7a14d49985e661b22401d44fed402d1d0925b243c923589c0fbc7e32cd04e29ed78d15d37d3aaa3fe6da3358310386b454258c589475f7d16f5aac018a79f6c1169d20fc33921dd8b5ce1cac6c348f90a3603624f6aeb91b64518c2e80950144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a0058310396a1a3e4ea7a14d49985e661b22401d44fed402d1d0925b243c923589c0fbc7e32cd04e29ed78d15d37d3aaa3fe6da3358310386b454258c589475f7d16f5aac018a79f6c1169d20fc33921dd8b5ce1cac6c348f90a3603624f6aeb91b64518c2e80950144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 3 addresses 3",
-        "encoded_tx": "igBYMQOncmsDgCL3WjhGF1hTYM7mKQcKLZ0ocSll5fJuzECFg4KANyTtNPJyAzbwnbYx8HRYMQOtWN9pbi1OkeqGyIHpOLpOqBs5XhJ5e4S5zzFLlUZwXoOcepnWBrJH3bT5rHo0FN0BRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBYMQOncmsDgCL3WjhGF1hTYM7mKQcKLZ0ocSll5fJuzECFg4KANyTtNPJyAzbwnbYx8HRYMQOtWN9pbi1OkeqGyIHpOLpOqBs5XhJ5e4S5zzFLlUZwXoOcepnWBrJH3bT5rHo0FN0BRAABhqAZYahCAABDAAnEAEA=",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -263,16 +278,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00583103a7726b038022f75a384617585360cee629070a2d9d28712965e5f26ecc40858382803724ed34f2720336f09db631f074583103ad58df696e2d4e91ea86c881e938ba4ea81b395e12797b84b9cf314b9546705e839c7a99d606b247ddb4f9ac7a3414dd0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00583103a7726b038022f75a384617585360cee629070a2d9d28712965e5f26ecc40858382803724ed34f2720336f09db631f074583103ad58df696e2d4e91ea86c881e938ba4ea81b395e12797b84b9cf314b9546705e839c7a99d606b247ddb4f9ac7a3414dd0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Using Protocol 3 addresses 3",
-        "encoded_tx": "igBYMQOncmsDgCL3WjhGF1hTYM7mKQcKLZ0ocSll5fJuzECFg4KANyTtNPJyAzbwnbYx8HRYMQOtWN9pbi1OkeqGyIHpOLpOqBs5XhJ5e4S5zzFLlUZwXoOcepnWBrJH3bT5rHo0FN0BRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBYMQOncmsDgCL3WjhGF1hTYM7mKQcKLZ0ocSll5fJuzECFg4KANyTtNPJyAzbwnbYx8HRYMQOtWN9pbi1OkeqGyIHpOLpOqBs5XhJ5e4S5zzFLlUZwXoOcepnWBrJH3bT5rHo0FN0BRAABhqAZYahCAABDAAnEAEA=",
         "valid": true,
+        "error": "",
         "testnet": false,
         "message": {
             "version": 0,
@@ -281,16 +297,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00583103a7726b038022f75a384617585360cee629070a2d9d28712965e5f26ecc40858382803724ed34f2720336f09db631f074583103ad58df696e2d4e91ea86c881e938ba4ea81b395e12797b84b9cf314b9546705e839c7a99d606b247ddb4f9ac7a3414dd0144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00583103a7726b038022f75a384617585360cee629070a2d9d28712965e5f26ecc40858382803724ed34f2720336f09db631f074583103ad58df696e2d4e91ea86c881e938ba4ea81b395e12797b84b9cf314b9546705e839c7a99d606b247ddb4f9ac7a3414dd0144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 1 Invalid payload length of 21 bytes",
-        "encoded_tx": "igBWAQAAAAAAAAAAAAAAAAAAAAAAAAAAAVYBAAAAAAAAAAAAAAAAAAAAAAAAAAABAUQAAYagGWGoQwAJxEIAAABA",
+        "encoded_tx": "igBWAQAAAAAAAAAAAAAAAAAAAAAAAAAAAVYBAAAAAAAAAAAAAAAAAAAAAAAAAAABAUQAAYagGWGoQgAAQwAJxABA",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -299,16 +316,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00560100000000000000000000000000000000000000000156010000000000000000000000000000000000000000010144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00560100000000000000000000000000000000000000000156010000000000000000000000000000000000000000010144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 1 Invalid payload length of 19 bytes",
-        "encoded_tx": "igBUAQAAAAAAAAAAAAAAAAAAAAAAAABUAQAAAAAAAAAAAAAAAAAAAAAAAAABRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBUAQAAAAAAAAAAAAAAAAAAAAAAAABUAQAAAAAAAAAAAAAAAAAAAAAAAAABRAABhqAZYahCAABDAAnEAEA=",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -317,16 +335,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005401000000000000000000000000000000000000005401000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005401000000000000000000000000000000000000005401000000000000000000000000000000000000000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 0 Invalid payload length of 21 bytes",
-        "encoded_tx": "igBWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQAAYagGWGoQwAJxEIAAABA",
+        "encoded_tx": "igBWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQAAYagGWGoQgAAQwAJxABA",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -335,16 +354,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00560000000000000000000000000000000000000000000056000000000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00560000000000000000000000000000000000000000000056000000000000000000000000000000000000000000000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 2 Invalid payload length of 21 bytes",
-        "encoded_tx": "igBWAgAAAAAAAAAAAAAAAAAAAAAAAAAAAFYCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQAAYagGWGoQwAJxEIAAABA",
+        "encoded_tx": "igBWAgAAAAAAAAAAAAAAAAAAAAAAAAAAAFYCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQAAYagGWGoQgAAQwAJxABA",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -353,16 +373,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00560200000000000000000000000000000000000000000056020000000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00560200000000000000000000000000000000000000000056020000000000000000000000000000000000000000000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 2 Invalid payload length of 19 bytes",
-        "encoded_tx": "igBUAgAAAAAAAAAAAAAAAAAAAAAAAABUAgAAAAAAAAAAAAAAAAAAAAAAAAABRAABhqAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "igBUAgAAAAAAAAAAAAAAAAAAAAAAAABUAgAAAAAAAAAAAAAAAAAAAAAAAAABRAABhqAZYahCAABDAAnEAEA=",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -371,16 +392,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005402000000000000000000000000000000000000005402000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a005402000000000000000000000000000000000000005402000000000000000000000000000000000000000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 3 Invalid payload length of 47 bytes",
-        "encoded_tx": "igBYMAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFgwAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQAAYagGWGoQwAJxEIAAABA",
+        "encoded_tx": "igBYMAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFgwAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUQAAYagGWGoQgAAQwAJxABA",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -389,16 +411,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a00583003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000058300300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a00583003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000058300300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Address protocol 3 Invalid payload length of 49 bytes",
-        "encoded_tx": "igBYMgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWDIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFEAAGGoBlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBYMgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWDIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFEAAGGoBlhqEIAAEMACcQAQA==",
         "valid": false,
+        "error": "Invalid address format",
         "testnet": false,
         "message": {
             "version": 0,
@@ -407,34 +430,17 @@
             "nonce": 1,
             "value": "100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a0058320300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000583203000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
-    },
-    {
-        "description": "Address with unknown protocol",
-        "encoded_tx": "igBVBAAAAAAAAAAAAAAAAAAAAAAAAAAAVQQAAAAAAAAAAAAAAAAAAAAAAAAAAAFEAAGGoBlhqEMACcRCAAAAQA==",
-        "valid": false,
-        "testnet": false,
-        "message": {
-            "version": 0,
-            "to": "faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaryyc34i",
-            "from": "faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaryyc34i",
-            "nonce": 1,
-            "value": "100000",
-            "gaslimit": "25000",
-            "gaspremium": "2500",
-            "gasfeecap": "0",
-            "method": 0
-        },
-        "encoded_tx_hex": "8a0055040000000000000000000000000000000000000000550400000000000000000000000000000000000000000144000186a01961a8430009c44200000040"
+        "encoded_tx_hex": "8a0058320300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000583203000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000144000186a01961a8420000430009c40040"
     },
     {
         "description": "Negative sign byte",
-        "encoded_tx": "igBVAdFQBQTk0aw+iayJGkUCWG+r2bQXVQG4gmGdRlWPPZ4xbRG0jc8hEycCagFBARlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAdFQBQTk0aw+iayJGkUCWG+r2bQXVQG4gmGdRlWPPZ4xbRG0jc8hEycCagFBARlhqEIAAEMACcQAQA==",
         "valid": false,
+        "error": "Unexpected value",
         "testnet": false,
         "message": {
             "version": 0,
@@ -443,16 +449,17 @@
             "nonce": 1,
             "value": "-100000",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501d1500504e4d1ac3e89ac891a4502586fabd9b4175501b882619d46558f3d9e316d11b48dcf211327026a0141011961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501d1500504e4d1ac3e89ac891a4502586fabd9b4175501b882619d46558f3d9e316d11b48dcf211327026a0141011961a8420000430009c40040"
     },
     {
         "description": "Empty value",
-        "encoded_tx": "igBVAdFQBQTk0aw+iayJGkUCWG+r2bQXVQG4gmGdRlWPPZ4xbRG0jc8hEycCagFBABlhqEMACcRCAAAAQA==",
+        "encoded_tx": "igBVAdFQBQTk0aw+iayJGkUCWG+r2bQXVQG4gmGdRlWPPZ4xbRG0jc8hEycCagFBABlhqEIAAEMACcQAQA==",
         "valid": false,
+        "error": "Unexpected value",
         "testnet": false,
         "message": {
             "version": 0,
@@ -461,16 +468,17 @@
             "nonce": 1,
             "value": "",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a005501d1500504e4d1ac3e89ac891a4502586fabd9b4175501b882619d46558f3d9e316d11b48dcf211327026a0141001961a8430009c44200000040"
+        "encoded_tx_hex": "8a005501d1500504e4d1ac3e89ac891a4502586fabd9b4175501b882619d46558f3d9e316d11b48dcf211327026a0141001961a8420000430009c40040"
     },
     {
         "description": "Wrong version",
-        "encoded_tx": "ihh7VQHRUAUE5NGsPomsiRpFAlhvq9m0F1UBuIJhnUZVjz2eMW0RtI3PIRMnAmoBQQAZYahDAAnEQgAAAEA=",
+        "encoded_tx": "ihh7VQHRUAUE5NGsPomsiRpFAlhvq9m0F1UBuIJhnUZVjz2eMW0RtI3PIRMnAmoBQQAZYahCAABDAAnEAEA=",
         "valid": false,
+        "error": "tx version is not supported",
         "testnet": false,
         "message": {
             "version": 123,
@@ -479,10 +487,258 @@
             "nonce": 1,
             "value": "",
             "gaslimit": "25000",
-            "gaspremium": "2500",
             "gasfeecap": "0",
+            "gaspremium": "2500",
             "method": 0
         },
-        "encoded_tx_hex": "8a187b5501d1500504e4d1ac3e89ac891a4502586fabd9b4175501b882619d46558f3d9e316d11b48dcf211327026a0141001961a8430009c44200000040"
+        "encoded_tx_hex": "8a187b5501d1500504e4d1ac3e89ac891a4502586fabd9b4175501b882619d46558f3d9e316d11b48dcf211327026a0141001961a8420000430009c40040"
+    },
+    {
+        "description": "Change owner address",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to": "f01369483",
+            "from": "f01363573",
+            "nonce": 0,
+            "value": "0",
+            "gaslimit": "0",
+            "gasfeecap": "0",
+            "gaspremium": "0",
+            "method": 23,
+            "numparams": 1,
+            "params": ["f01363573"]
+        },
+        "encoded_tx_hex": "8a0044008bcb534400f59c53004000404017454400f59c53"
+    },
+    {
+        "description": "Change owner address",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to": "f01004",
+            "from": "f137sjdbgunloi7couiy4l5nc7pd6k2jmq32vizpy",
+            "nonce": 1,
+            "value": "0",
+            "gaslimit": "1000000",
+            "gasfeecap": "0000000000000002500",
+            "gaspremium": "0000000000000002500",
+            "method": 23,
+            "numparams": 1,
+            "params": ["01dfe49184d46adc8f89d44638beb45f78fcad2590"]
+        },
+        "encoded_tx_hex": "8A004300EC075501DFE49184D46ADC8F89D44638BEB45F78FCAD259001401A000F4240430009C4430009C4175501DFE49184D46ADC8F89D44638BEB45F78FCAD2590"
+    },
+    {
+        "description": "Sign proposal",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to": "f01004",
+            "from": "f137sjdbgunloi7couiy4l5nc7pd6k2jmq32vizpy",
+            "nonce": 1,
+            "value": "0",
+            "gaslimit": "1000000",
+            "gasfeecap": "0000000000000002500",
+            "gaspremium": "0000000000000002500",
+            "method": 2,
+            "numparams": 1,
+            "params": ["01dfe49184d46adc8f89d44638beb45f78fcad2590", "0003e8", "0", ""]
+        },
+        "encoded_tx_hex": "8a004300ec075501dfe49184d46adc8f89d44638beb45f78fcad259001401a000f4240430009c4430009c402581d845501dfe49184d46adc8f89d44638beb45f78fcad2590430003e80040"
+    },
+    {
+        "description": "Transfer with params",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to": "f01369483",
+            "from": "f01363573",
+            "nonce": 0,
+            "value": "0",
+            "gaslimit": "0",
+            "gasfeecap": "0",
+            "gaspremium": "0",
+            "method": 0,
+            "numparams": 1,
+            "params": [1234]
+        },
+        "encoded_tx_hex": "8a0044008bcb534400f59c5300400040400044811904d2"
+    },
+    {
+        "description": "Using Protocol 4 addresses",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to0x": "0xd4224267c4ab4a184bd1aa066b3361e70efbbeaf",
+            "to": "f410f2qreez6evnfbqs6rvidgwm3b44hpxpvpeuoddga",
+            "from0x": "0xd4224267c4ab4a184bd1aa066b3361e70efbbeaf",
+            "from": "f410f2qreez6evnfbqs6rvidgwm3b44hpxpvpeuoddga",
+            "nonce": 1,
+            "value": "100000",
+            "gaslimit": "25000",
+            "gasfeecap": "1",
+            "gaspremium": "1",
+            "method": 0
+        },
+        "encoded_tx_hex": "8a0056040ad4224267c4ab4a184bd1aa066b3361e70efbbeaf56040ad4224267c4ab4a184bd1aa066b3361e70efbbeaf0144000186a01961a84200014200010040"
+    },
+    {
+        "description": "Address with unknown protocol",
+        "valid": false,
+        "error": "Invalid address format",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to": "faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazuwnlsi",
+            "from": "faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazuwnlsi",
+            "nonce": 1,
+            "value": "100000",
+            "gaslimit": 25000,
+            "gasfeecap": "1",
+            "gaspremium": "1",
+            "method": 0
+        },
+        "encoded_tx_hex": "8A0055050000000000000000000000000000000000000000550400000000000000000000000000000000000000000144000186A01961A84200014200010040"
+    },
+    {
+        "description": "Multisig propose",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": true,
+        "message": {
+            "version": 0,
+            "to": "t01004",
+            "from": "t137sjdbgunloi7couiy4l5nc7pd6k2jmq32vizpy",
+            "nonce": 1,
+            "value": "0",
+            "gaslimit": 1000000,
+            "gasfeecap": "2500",
+            "gaspremium": "2500",
+            "method": 2,
+            "numparams": 1,
+            "params": ["01dfe49184d46adc8f89d44638beb45f78fcad2590", "0003e8", "0", ""]
+        },
+        "encoded_tx_hex": "8a004300ec075501dfe49184d46adc8f89d44638beb45f78fcad259001401a000f4240430009c4430009c402581d845501dfe49184d46adc8f89d44638beb45f78fcad2590430003e80040"
+    },
+    {
+        "description": "Multisig approve",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": true,
+        "message": {
+            "version": 0,
+            "to": "t01004",
+            "from": "t1d2xrzcslx7xlbbylc5c3d5lvandqw4iwl6epxba",
+            "nonce": 1,
+            "value": "0",
+            "gaslimit": 1000000,
+            "gasfeecap": "2500",
+            "gaspremium": "2500",
+            "method": 3,
+            "numparams": 1,
+            "params": ["1234", "f8acf2652972f009aeaa1d9b61cfcd86702b3093c19c3049604f19db8cb378f3"]
+        },
+        "encoded_tx_hex": "8a004300ec0755011eaf1c8a4bbfeeb0870b1745b1f57503470b711601401a000f4240430009c4430009c4035826821904d25820f8acf2652972f009aeaa1d9b61cfcd86702b3093c19c3049604f19db8cb378f3"
+    },
+    {
+        "description": "Multisig cancel",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": true,
+        "message": {
+            "version": 0,
+            "to": "t01004",
+            "from": "t1d2xrzcslx7xlbbylc5c3d5lvandqw4iwl6epxba",
+            "nonce": 1,
+            "value": "0",
+            "gaslimit": 1000000,
+            "gasfeecap": "2500",
+            "gaspremium": "2500",
+            "method": 4,
+            "numparams": 1,
+            "params": ["1234", "f8acf2652972f009aeaa1d9b61cfcd86702b3093c19c3049604f19db8cb378f3"]
+        },
+        "encoded_tx_hex": "8a004300ec0755011eaf1c8a4bbfeeb0870b1745b1f57503470b711601401a000f4240430009c4430009c4045826821904d25820f8acf2652972f009aeaa1d9b61cfcd86702b3093c19c3049604f19db8cb378f3"
+    },
+    {
+        "description": "Invoke EVM",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": true,
+        "message": {
+            "version": 0,
+            "to0x": "0xea71f8dc046717b8b14c18005186d03495a0e492",
+            "to": "t410f5jy7rxaem4l3rmkmdaafdbwqgsk2bzess6wu5qq",
+            "from": "t1d2xrzcslx7xlbbylc5c3d5lvandqw4iwl6epxba",
+            "nonce": 3,
+            "value": "1000000000000000000",
+            "gaslimit": 2291443,
+            "gasfeecap": "101021",
+            "gaspremium": "99967",
+            "method": 3844450837
+        },
+        "encoded_tx_hex": "8A0056040AEA71F8DC046717B8B14C18005186D03495A0E49255011EAF1C8A4BBFEEB0870B1745B1F57503470B71160349000DE0B6B3A76400001A0022F6F34400018A9D440001867F1AE525AA1540"
+    },
+    {
+        "description": "Deposit",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": true,
+        "message": {
+            "version": 0,
+            "to0x": "0x6c297aed654816dc5d211c956de816ba923475d2",
+            "to": "t410fnquxv3lfjalnyxjbdskw32awxkjdi5osydrtwqi",
+            "from": "t1d2xrzcslx7xlbbylc5c3d5lvandqw4iwl6epxba",
+            "nonce": 8,
+            "value": "1000000000000000000",
+            "gaslimit": 14301840,
+            "gasfeecap": "100755",
+            "gaspremium": "99701",
+            "method": 3844450837,
+            "numparams": 1,
+            "params": ["d0e30db0"]
+        },
+        "encoded_tx_hex": "8a0056040a6c297aed654816dc5d211c956de816ba923475d255011eaf1c8a4bbfeeb0870b1745b1f57503470b71160849000de0b6b3a76400001a00da3a90440001899344000185751ae525aa154544d0e30db0"
+    },
+    {
+        "description": "Params with simple bytes",
+        "encoded_tx": "igBVAQkVGa0a1c0u4wGgGgYh6gqQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cHcQh7cH",
+        "valid": true,
+        "testnet": false,
+        "error": "",
+        "message": {
+            "version": 0,
+            "to": "f1sfizuhpgjqyl4yjydlebncvecf3q2cmeeathzwi",
+            "from": "f1pc2apytmdas3sn5ylwhfa32jfpx7ez7ykieelna",
+            "nonce": 1442,
+            "value": "1",
+            "gaslimit": "1537703",
+            "gaspremium": "104517",
+            "gasfeecap": "105571",
+            "method": 0,
+            "params": ["hello world"]
+        },
+        "encoded_tx_hex": "8a00550191519a1de64c30be61381ac8168aa411770d0984550178b407e26c1825b937b85d8e506f492beff267f81905a24200011a001776a74400019c634400019845004b68656c6c6f20776f726c64"
     }
 ]

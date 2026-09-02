@@ -1,0 +1,26 @@
+[
+    {
+        "description": "Invoke EVM Transfer ERC20",
+        "encoded_tx": "notAvailable",
+        "valid": true,
+        "error": "",
+        "testnet": false,
+        "message": {
+            "version": 0,
+            "to0x": "0xff000000000000000000000000000000001c0485",
+            "to": "f01836165",
+            "from": "f16evrgvbuk3htf44rrp647zrwzuglk4ynoiivvgi",
+            "nonce": 206,
+            "value": "WFIL 0.0001",
+            "gaslimit": 30213277,
+            "gasfeecap": "0000000000000206328",
+            "gaspremium": "000000000000201090",
+            "method": "ERC20 Transfer"
+        },
+        "encoded_tx_hex": "8a0056040a60e1773636cf5e4a227d9ac24f20feca034ee25a5501f12b13543456cf32f3918bfdcfe636cd0cb5730d18ce401a01cd049d44000325f844000311821ae525aa1558465844a9059cbb000000000000000000000000ff000000000000000000000000000000001c048500000000000000000000000000000000000000000000000000005af3107a4000"
+    }
+]
+
+
+
+

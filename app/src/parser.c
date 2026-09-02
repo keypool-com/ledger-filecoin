@@ -1,126 +1,182 @@
 /*******************************************************************************
-*   (c) 2019 Zondax GmbH
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-********************************************************************************/
+ *  (c) 2018 - 2023 Zondax AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ********************************************************************************/
+
+#include "parser.h"
 
 #include <stdio.h>
 #include <zxmacros.h>
-#include "parser_impl.h"
-#include "bignum.h"
-#include "parser.h"
-#include "parser_txdef.h"
-#include "coin.h"
 
-#if defined(TARGET_NANOX)
+#include "app_mode.h"
+#include "bignum.h"
+#include "coin.h"
+#include "fil_utils.h"
+#include "parser_common.h"
+#include "parser_impl.h"
+#include "parser_impl_evm.h"
+#include "parser_invoke_evm.h"
+#include "parser_raw_bytes.h"
+#include "parser_txdef.h"
+#include "zxformat.h"
+
+#define TRANSFER_METHOD 0
+
+#if defined(LEDGER_SPECIFIC)
 // For some reason NanoX requires this function
-void __assert_fail(const char * assertion, const char * file, unsigned int line, const char * function){
-    while(1) {};
+void __assert_fail(__Z_UNUSED const char *assertion, __Z_UNUSED const char *file, __Z_UNUSED unsigned int line,
+                   __Z_UNUSED const char *function) {
+    while (1) {
+    };
 }
 #endif
 
+parser_error_t parser_init(parser_context_t *ctx, const uint8_t *buffer, uint16_t bufferSize);
+
+parser_error_t parser_init_context(parser_context_t *ctx, const uint8_t *buffer, uint16_t bufferSize) {
+    ctx->offset = 0;
+    ctx->buffer = NULL;
+    ctx->bufferLen = 0;
+
+    if (bufferSize == 0 || buffer == NULL) {
+        // Not available, use defaults
+        return parser_init_context_empty;
+    }
+
+    ctx->buffer = buffer;
+    ctx->bufferLen = bufferSize;
+
+    memset(&parser_tx_obj, 0, sizeof(parser_tx_obj));
+
+    return parser_ok;
+}
+
+parser_error_t parser_init(parser_context_t *ctx, const uint8_t *buffer, uint16_t bufferSize) {
+    CHECK_ERROR(parser_init_context(ctx, buffer, bufferSize))
+    return parser_ok;
+}
+
 parser_error_t parser_parse(parser_context_t *ctx, const uint8_t *data, size_t dataLen) {
-    CHECK_PARSER_ERR(parser_init(ctx, data, dataLen))
-    return _read(ctx, &parser_tx_obj);
+    zemu_log_stack("parser_parse");
+
+    switch (ctx->tx_type) {
+        case fil_tx: {
+            CHECK_ERROR(parser_init(ctx, data, dataLen))
+            app_mode_skip_blindsign_ui();
+            return _read(ctx, &(parser_tx_obj.base_tx));
+        }
+        case raw_bytes: {
+            // Processing raw-bytes is valid only in expert mode
+            if (!app_mode_blindsign()) return parser_blindsign_mode_required;
+
+            return _readRawBytes(ctx, &parser_tx_obj.raw_bytes_tx);
+        }
+        default:
+            return parser_unsupported_tx;
+    }
 }
 
 parser_error_t parser_validate(const parser_context_t *ctx) {
-    CHECK_PARSER_ERR(_validateTx(ctx, &parser_tx_obj))
+    zemu_log_stack("parser_validate\n");
+
+    // Call especific fil transaction implementation for data validation
+    switch (ctx->tx_type) {
+        case fil_tx: {
+            CHECK_ERROR(_validateTx(ctx, &parser_tx_obj.base_tx))
+            break;
+        }
+        case raw_bytes: {
+            CHECK_ERROR(_validateRawBytes(ctx))
+            break;
+        }
+        default:
+            return parser_unsupported_tx;
+    }
 
     // Iterate through all items to check that all can be shown and are valid
     uint8_t numItems = 0;
-    CHECK_PARSER_ERR(parser_getNumItems(ctx, &numItems));
+    CHECK_ERROR(parser_getNumItems(ctx, &numItems));
 
-    char tmpKey[40];
-    char tmpVal[40];
+    char tmpKey[40] = {0};
+    char tmpVal[40] = {0};
 
     for (uint8_t idx = 0; idx < numItems; idx++) {
         uint8_t pageCount = 0;
-        CHECK_PARSER_ERR(parser_getItem(ctx, idx, tmpKey, sizeof(tmpKey), tmpVal, sizeof(tmpVal), 0, &pageCount))
+        CHECK_ERROR(parser_getItem(ctx, idx, tmpKey, sizeof(tmpKey), tmpVal, sizeof(tmpVal), 0, &pageCount))
     }
 
     return parser_ok;
 }
 
 parser_error_t parser_getNumItems(const parser_context_t *ctx, uint8_t *num_items) {
-    *num_items = _getNumItems(ctx, &parser_tx_obj);
+    switch (ctx->tx_type) {
+        case fil_tx: {
+            *num_items = _getNumItems(ctx, &parser_tx_obj.base_tx);
+            // _getNumItems reports failure - an item count that does not fit a
+            // uint8_t, or an unparseable InvokeEVM payload - by returning 0. A
+            // valid FIL message always has at least the six base fields, so a
+            // zero count must not reach parser_validate: its loop would run zero
+            // times and the user would approve a review with no fields on screen.
+            if (*num_items == 0) {
+                return parser_unexpected_number_items;
+            }
+            break;
+        }
+        case raw_bytes: {
+            *num_items = _getNumItemsRawBytes(ctx);
+            break;
+        }
+        default:
+            return parser_unsupported_tx;
+    }
     return parser_ok;
 }
 
-#define LESS_THAN_64_DIGIT(num_digit) if (num_digit > 64) return parser_value_out_of_range;
-
-__Z_INLINE bool format_quantity(const bigint_t *b,
-                                uint8_t *bcd, uint16_t bcdSize,
-                                char *bignum, uint16_t bignumSize) {
-
-    if (b->len < 2) {
-        snprintf(bignum, bignumSize, "0");
-        return true;
-    }
-
-    // first byte of b is the sign byte so we can remove this one
-    bignumBigEndian_to_bcd(bcd, bcdSize, b->buffer + 1, b->len - 1);
-    return bignumBigEndian_bcdprint(bignum, bignumSize, bcd, bcdSize);
+parser_error_t parser_printParam(const fil_base_tx_t *tx, uint8_t paramIdx, char *outVal, uint16_t outValLen,
+                                 uint8_t pageIdx, uint8_t *pageCount) {
+    return _printParam(tx, paramIdx, outVal, outValLen, pageIdx, pageCount);
 }
 
-__Z_INLINE parser_error_t parser_printBigIntFixedPoint(const bigint_t *b,
-                                                       char *outVal, uint16_t outValLen,
-                                                       uint8_t pageIdx, uint8_t *pageCount) {
+static parser_error_t printMethod(char *outKey, uint16_t outKeyLen, char *outVal, uint16_t outValLen, uint8_t pageIdx,
+                                  uint8_t *pageCount) {
+    snprintf(outKey, outKeyLen, "Method ");
+    *pageCount = 1;
 
-    LESS_THAN_64_DIGIT(b->len)
+    switch (parser_tx_obj.base_tx.method) {
+        case TRANSFER_METHOD:
+            snprintf(outVal, outValLen, "Transfer ");
+            break;
+        case INVOKE_EVM_METHOD:
+            snprintf(outVal, outValLen, "Invoke EVM ");
+            break;
 
-    char bignum[160];
-    union {
-        // overlapping arrays to avoid excessive stack usage. Do not use at the same time
-        uint8_t bcd[80];
-        char output[160];
-    } overlapped;
-
-    MEMZERO(overlapped.bcd, sizeof(overlapped.bcd));
-    MEMZERO(bignum, sizeof(bignum));
-
-    if (!format_quantity(b, overlapped.bcd, sizeof(overlapped.bcd), bignum, sizeof(bignum))) {
-        return parser_unexpected_value;
+        default: {
+            char buffer[100];
+            MEMZERO(buffer, sizeof(buffer));
+            fpuint64_to_str(buffer, sizeof(buffer), parser_tx_obj.base_tx.method, 0);
+            pageString(outVal, outValLen, buffer, pageIdx, pageCount);
+            break;
+        }
     }
 
-    fpstr_to_str(overlapped.output, sizeof(overlapped.output), bignum, COIN_AMOUNT_DECIMAL_PLACES);
-    pageString(outVal, outValLen, overlapped.output, pageIdx, pageCount);
     return parser_ok;
 }
 
-__Z_INLINE parser_error_t parser_printAddress(const address_t *a,
-                                              char *outVal, uint16_t outValLen,
-                                              uint8_t pageIdx, uint8_t *pageCount) {
+parser_error_t _getItemFil(const parser_context_t *ctx, uint8_t displayIdx, char *outKey, uint16_t outKeyLen,
+                           char *outVal, uint16_t outValLen, uint8_t pageIdx, uint8_t *pageCount) {
+    const bool expert_mode = app_mode_expert();
 
-    // the format :
-    // network (1 byte) + protocol (1 byte) + base 32 [ payload (20 bytes or 48 bytes) + checksum (optional - 4bytes)]
-    // Max we need 84 bytes to support BLS + 16 bytes padding
-    char outBuffer[84 + 16];
-    MEMZERO(outBuffer, sizeof(outBuffer));
-
-    if (formatProtocol(a->buffer, a->len, (uint8_t *) outBuffer, sizeof(outBuffer)) == 0) {
-        return parser_invalid_address;
-    }
-
-    pageString(outVal, outValLen, outBuffer, pageIdx, pageCount);
-    return parser_ok;
-}
-
-parser_error_t parser_getItem(const parser_context_t *ctx,
-                              uint8_t displayIdx,
-                              char *outKey, uint16_t outKeyLen,
-                              char *outVal, uint16_t outValLen,
-                              uint8_t pageIdx, uint8_t *pageCount) {
     MEMZERO(outKey, outKeyLen);
     MEMZERO(outVal, outValLen);
     snprintf(outKey, outKeyLen, "?");
@@ -128,96 +184,152 @@ parser_error_t parser_getItem(const parser_context_t *ctx,
     *pageCount = 0;
 
     uint8_t numItems = 0;
-    CHECK_PARSER_ERR(parser_getNumItems(ctx, &numItems))
+    CHECK_ERROR(parser_getNumItems(ctx, &numItems))
     CHECK_APP_CANARY()
 
-    if (displayIdx < 0 || displayIdx >= numItems) {
+    if (displayIdx >= numItems) {
         return parser_no_data;
     }
 
-    if (displayIdx == 0) {
-        snprintf(outKey, outKeyLen, "To");
-        return parser_printAddress(&parser_tx_obj.to,
-                                   outVal, outValLen, pageIdx, pageCount);
+    // If the transaction is InvokeEVM and it's a transfer from ERC20 token
+    if (isInvokeEVM_ERC20Transfer(&parser_tx_obj.base_tx)) {
+        return printInvokeEVM(&parser_tx_obj.base_tx, displayIdx, outKey, outKeyLen, outVal, outValLen, pageIdx,
+                              pageCount);
     }
 
-    if (displayIdx == 1) {
-        snprintf(outKey, outKeyLen, "From");
-        return parser_printAddress(&parser_tx_obj.from,
-                                   outVal, outValLen, pageIdx, pageCount);
+    // For InvokeEVM methods, expert mode is required
+    if (parser_tx_obj.base_tx.method == INVOKE_EVM_METHOD && !app_mode_expert()) {
+        return parser_expert_mode_required;
     }
 
-    if (displayIdx == 2) {
-        snprintf(outKey, outKeyLen, "Nonce");
-        if (uint64_to_str(outVal, outValLen, parser_tx_obj.nonce) != NULL) {
-            return parser_unexepected_error;
+    uint32_t adjustedIndex = displayIdx;
+    if (parser_tx_obj.base_tx.to.buffer[0] != ADDRESS_PROTOCOL_DELEGATED) {
+        adjustedIndex++;
+    }
+
+    if (adjustedIndex >= 2 && parser_tx_obj.base_tx.from.buffer[0] != ADDRESS_PROTOCOL_DELEGATED) {
+        adjustedIndex++;
+    }
+
+    // Normal mode: 6 fields [To | From | Value | Gas Limit | Gas Fee Cap |
+    // Method] + Params (variable length) Expert mode: 8 fields [To | From | Value
+    // | Gas Limit | Gas Fee Cap | Gas Premium | Nonce | Method] + Params
+    // (variable length)
+    if (adjustedIndex > UINT8_MAX) {
+        return parser_unexpected_value;
+    }
+    switch ((uint8_t)adjustedIndex) {
+        case 0:
+            snprintf(outKey, outKeyLen, "To ");
+            return printEthAddress(&parser_tx_obj.base_tx.to, outVal, outValLen, pageIdx, pageCount);
+        case 1:
+            snprintf(outKey, outKeyLen, "To ");
+            return printAddress(&parser_tx_obj.base_tx.to, outVal, outValLen, pageIdx, pageCount);
+        case 2:
+            snprintf(outKey, outKeyLen, "From ");
+            return printEthAddress(&parser_tx_obj.base_tx.from, outVal, outValLen, pageIdx, pageCount);
+        case 3:
+            snprintf(outKey, outKeyLen, "From ");
+            return printAddress(&parser_tx_obj.base_tx.from, outVal, outValLen, pageIdx, pageCount);
+        case 4:
+            snprintf(outKey, outKeyLen, "Value ");
+            return parser_printBigIntFixedPoint(&parser_tx_obj.base_tx.value, outVal, outValLen, pageIdx, pageCount,
+                                                COIN_AMOUNT_DECIMAL_PLACES);
+
+        case 5: {
+            char tmpBuffer[80] = {0};
+            snprintf(outKey, outKeyLen, "Gas Limit ");
+            if (int64_to_str(tmpBuffer, sizeof(tmpBuffer), parser_tx_obj.base_tx.gaslimit) != NULL) {
+                return parser_unexpected_error;
+            }
+
+            if (insertDecimalPoint(tmpBuffer, sizeof(tmpBuffer), COIN_AMOUNT_DECIMAL_PLACES) != zxerr_ok) {
+                return parser_unexpected_error;
+            }
+            if (z_str3join(tmpBuffer, sizeof(tmpBuffer), "FIL ", NULL) != zxerr_ok) {
+                return parser_unexpected_error;
+            }
+
+            pageString(outVal, outValLen, tmpBuffer, pageIdx, pageCount);
+            return parser_ok;
         }
-        *pageCount = 1;
+
+        case 6:
+            snprintf(outKey, outKeyLen, "Gas Fee Cap ");
+            return parser_printBigIntFixedPoint(&parser_tx_obj.base_tx.gasfeecap, outVal, outValLen, pageIdx, pageCount,
+                                                COIN_AMOUNT_DECIMAL_PLACES);
+
+        case 7:
+            if (expert_mode) {
+                snprintf(outKey, outKeyLen, "Gas Premium ");
+                return parser_printBigIntFixedPoint(&parser_tx_obj.base_tx.gaspremium, outVal, outValLen, pageIdx,
+                                                    pageCount, COIN_AMOUNT_DECIMAL_PLACES);
+            }
+            return printMethod(outKey, outKeyLen, outVal, outValLen, pageIdx, pageCount);
+
+        case 8:
+            if (expert_mode) {
+                snprintf(outKey, outKeyLen, "Nonce ");
+                if (uint64_to_str(outVal, outValLen, parser_tx_obj.base_tx.nonce) != NULL) {
+                    return parser_unexpected_error;
+                }
+                *pageCount = 1;
+                return parser_ok;
+            }
+            // For non expert mode this index represent params field.
+            break;
+
+        case 9:
+            if (expert_mode) {
+                return printMethod(outKey, outKeyLen, outVal, outValLen, pageIdx, pageCount);
+            }
+            // For non expert mode this index represent params field.
+            break;
+
+        default:
+            break;
+    }
+
+    if (parser_tx_obj.base_tx.numparams == 0) {
+        snprintf(outKey, outKeyLen, "Params ");
+        snprintf(outVal, outValLen, "- NONE -");
         return parser_ok;
     }
 
-    if (displayIdx == 3) {
-        snprintf(outKey, outKeyLen, "Value");
-        return parser_printBigIntFixedPoint(&parser_tx_obj.value, outVal, outValLen, pageIdx, pageCount);
+    // remaining display pages show the params
+    int32_t paramIdxSigned = displayIdx - (numItems - parser_tx_obj.base_tx.numparams);
+
+    // end of params
+    if (paramIdxSigned < 0 || paramIdxSigned >= parser_tx_obj.base_tx.numparams) {
+        return parser_unexpected_field;
     }
 
-    if (displayIdx == 4) {
-        snprintf(outKey, outKeyLen, "Gas Limit");
-        if (int64_to_str(outVal, outValLen, parser_tx_obj.gaslimit) != NULL) {
-            return parser_unexepected_error;
-        }
-        *pageCount = 1;
-        return parser_ok;
-    }
+    uint8_t paramIdx = (uint8_t)paramIdxSigned;
+    *pageCount = 1;
+    snprintf(outKey, outKeyLen, "Params |%d| ", paramIdx + 1);
 
-    if (displayIdx == 5) {
-        snprintf(outKey, outKeyLen, "Gas Premium");
-        return parser_printBigIntFixedPoint(&parser_tx_obj.gaspremium, outVal, outValLen, pageIdx, pageCount);
-    }
-
-    if (displayIdx == 6) {
-        snprintf(outKey, outKeyLen, "Gas Fee Cap");
-        return parser_printBigIntFixedPoint(&parser_tx_obj.gasfeecap, outVal, outValLen, pageIdx, pageCount);
-    }
-
-    if (displayIdx == 7) {
-        snprintf(outKey, outKeyLen, "Method");
-        *pageCount = 1;
-        switch(parser_tx_obj.method) {
-            case method0:
-                snprintf(outVal, outValLen, "Transfer");
-                return parser_ok;
-            case method1:
-                snprintf(outVal, outValLen, "Method1");
-                return parser_ok;
-            case method2:
-                snprintf(outVal, outValLen, "Method2");
-                return parser_ok;
-            case method3:
-                snprintf(outVal, outValLen, "Method3");
-                return parser_ok;
-            case method4:
-                snprintf(outVal, outValLen, "Method4");
-                return parser_ok;
-            case method5:
-                snprintf(outVal, outValLen, "Method5");
-                return parser_ok;
-            case method6:
-                snprintf(outVal, outValLen, "Method6");
-                return parser_ok;
-            case method7:
-                snprintf(outVal, outValLen, "Method7");
-                return parser_ok;
-        }
-        return parser_unexpected_method;
-    }
-
-    if (displayIdx == 8) {
-        *pageCount = 1;
-        snprintf(outKey, outKeyLen, "Params");
-        snprintf(outVal, outValLen, "Not Available");
-        return parser_ok;
-    }
-
-    return parser_ok;
+    zemu_log_stack(outKey);
+    return parser_printParam(&parser_tx_obj.base_tx, paramIdx, outVal, outValLen, pageIdx, pageCount);
 }
+
+parser_error_t parser_getItem(const parser_context_t *ctx, uint8_t displayIdx, char *outKey, uint16_t outKeyLen,
+                              char *outVal, uint16_t outValLen, uint8_t pageIdx, uint8_t *pageCount) {
+    switch (ctx->tx_type) {
+        case fil_tx: {
+            return _getItemFil(ctx, displayIdx, outKey, outKeyLen, outVal, outValLen, pageIdx, pageCount);
+        }
+        case raw_bytes: {
+            // for now just display the hash
+            return _getItemRawBytes(ctx, displayIdx, outKey, outKeyLen, outVal, outValLen, pageIdx, pageCount);
+        }
+        default:
+            return parser_unsupported_tx;
+    }
+}
+
+parser_error_t parser_rawbytes_init(uint8_t *buf, size_t buf_len) { return raw_bytes_init(buf, buf_len); }
+parser_error_t parser_rawbytes_update(uint8_t *buf, size_t buf_len) { return raw_bytes_update(buf, buf_len); }
+void parser_rawbytes_reset() { raw_bytes_reset(); }
+bool parser_rawbytes_initialized() { return raw_bytes_is_initialized(); }
+uint8_t *parser_rawbytes_hash() { return parser_tx_obj.raw_bytes_tx.digest; }
+size_t parser_rawbytes_hash_len() { return sizeof(parser_tx_obj.raw_bytes_tx.digest); }

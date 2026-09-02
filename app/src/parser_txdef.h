@@ -1,20 +1,21 @@
 /*******************************************************************************
-*  (c) 2019 Zondax GmbH
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-********************************************************************************/
+ *  (c) 2018 - 2023 Zondax AG
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ********************************************************************************/
 #pragma once
 
+#include "crypto.h"
 #define CBOR_PARSER_MAX_RECURSIONS 4
 
 #include <coin.h>
@@ -24,19 +25,23 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-typedef enum {
-    method0 = 0,
-    method1 = 1,
-    method2 = 2,
-    method3 = 3,
-    method4 = 4,
-    method5 = 5,
-    method6 = 6,
-    method7 = 7,
-} method_e;
+#include "rlp.h"
+
+#define MAX_SUPPORT_METHOD UINT64_MAX
+
+#define MAX_PARAMS_BUFFER_SIZE 1256
+
+#define ETH_ADDRESS_LEN 20
+#define MAX_CHAIN_LEN UINT64_MAX
+
+// https://github.com/filecoin-project/go-state-types/blob/master/builtin/v9/market/policy.go#L30
+#define MAX_DEAL_LABEL_SIZE 256
+
+// This limit is not part of lotus but our restriction
+#define MAX_CID_LEN 200
 
 // https://github.com/filecoin-project/lotus/blob/65c669b0f2dfd8c28b96755e198b9cdaf0880df8/chain/address/address.go#L36
 // https://github.com/filecoin-project/lotus/blob/65c669b0f2dfd8c28b96755e198b9cdaf0880df8/chain/address/address.go#L371-L373
@@ -53,6 +58,21 @@ typedef struct {
     size_t len;
 } bigint_t;
 
+// https://github.com/filecoin-project/go-state-types/blob/master/builtin/v9/market/deal.go#L40
+typedef struct {
+    // add 1-byte for the null terminated string
+    uint8_t data[MAX_DEAL_LABEL_SIZE + 1];
+    size_t len;
+    uint8_t is_string;
+} deal_label_t;
+
+// https://github.com/ipfs/go-cid/blob/master/cid.go#L173
+typedef struct {
+    // plus null
+    uint8_t str[MAX_CID_LEN + 1];
+    size_t len;
+} cid_t;
+
 // https://github.com/filecoin-project/lotus/blob/eb4f4675a5a765e4898ec6b005ba2e80da8e7e1a/chain/types/message.go#L24-L39
 typedef struct {
     int64_t version;
@@ -64,8 +84,27 @@ typedef struct {
     bigint_t gaspremium;
     bigint_t gasfeecap;
     uint64_t method;
-    // params are not supported at this moment
-    // char *params
+    uint8_t numparams;
+    uint8_t params[MAX_PARAMS_BUFFER_SIZE];
+    size_t params_len;
+} fil_base_tx_t;
+
+typedef struct {
+    cx_blake2b_t ctx_blake2b;
+    uint8_t digest[BLAKE2B_256_SIZE];
+    size_t total;
+    size_t current;
+    // Set only once raw_bytes_init has accepted the length varint and the
+    // "Filecoin Sign Bytes:" prefix. Updates and the final read are refused
+    // while it is false, so a failed or foreign session cannot be resumed.
+    bool initialized;
+} raw_bytes_state_t;
+
+typedef struct {
+    union {
+        fil_base_tx_t base_tx;
+        raw_bytes_state_t raw_bytes_tx;
+    };
 } parser_tx_t;
 
 #ifdef __cplusplus
